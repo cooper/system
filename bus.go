@@ -123,8 +123,8 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 		// invalid.
 	}
 
-	// if a handler for this command exists, run it
-	//conn.service.handleEvent(command, params)
+	// if a handler for this command exists, run it.
+	conn.handler(command, params)
 
 	return true
 }

@@ -7,12 +7,13 @@ import "os"
 // Process objects typically inherit from the SystemProcess class, which itself inherits
 // from Go's os.Process.
 type SystemProcess struct {
-	os.Process
+	*os.Process
 }
 
 // returns a new SystemPrcoess
 func newSystemProcess(pid int) *SystemProcess {
-	return &SystemProcess{os.FindProcess(pid)}
+	proc, _ := os.FindProcess(pid)
+	return &SystemProcess{proc}
 }
 
 // returns the numerical process ID
