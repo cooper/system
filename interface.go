@@ -6,6 +6,9 @@ package system
 // Register("Some program", "1.0", "a sample program")
 func Register(name string, version string, description string) {
 
+	// create the initial logger.
+	Logger = createLogger(name)
+
 	// connect to the system bus.
 	conn, err := BusConnect("/System/Bus/processbus", clientHandler)
 	if err != nil {
