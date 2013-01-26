@@ -35,6 +35,7 @@ func BusConnect(path string, handler busHandler) (conn *BusConnection, err error
 		path:     path,
 		socket:   unixConn,
 		incoming: bufio.NewReader(unixConn),
+		outgoing: bufio.NewWriter(unixConn),
 		handler:  handler,
 	}
 
@@ -87,29 +88,40 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 		return false
 	}
 
-	// should be an array of format [command, parameters].
+	// should be an array of format [PID, command, parameters].
+	// PID        : type int
 	// command    : type string
 	// parameters : type map[string]interface{}
 	c := i.([]interface{})
 
 	var (
+		source  *ClientProcess
 		command string
 		params  map[string]interface{}
 	)
 
-	// extract command.
+	// extract source.
 	switch c[0].(type) {
+	case int:
+		source = newClientProcess(c[0].(int))
+	default:
+		return false
+		// invalid
+	}
+
+	// extract command.
+	switch c[1].(type) {
 	case string:
-		command = c[0].(string)
+		command = c[1].(string)
 	default:
 		return false
 		// invalid.
 	}
 
 	// extract params.
-	switch c[1].(type) {
+	switch c[2].(type) {
 	case map[string]interface{}:
-		params = c[1].(map[string]interface{})
+		params = c[2].(map[string]interface{})
 	default:
 		return false
 		// invalid.
@@ -121,7 +133,7 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 	}
 
 	// if a handler for this command exists, run it.
-	conn.handler(nil, command, params)
+	conn.handler(source, command, params)
 
 	return true
 }

@@ -16,5 +16,6 @@ type BusConnection struct {
 	path     string        // connect address
 	socket   net.Conn      // there's no reason to restrict to Unix sockets
 	incoming *bufio.Reader // data reader - currently used for clients only
+	outgoing *bufio.Writer // data writer - currently used for clients only
 	handler  busHandler    // the function called when an event is received
 }
