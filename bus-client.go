@@ -121,7 +121,7 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 	}
 
 	// if a handler for this command exists, run it.
-	conn.handler(command, params)
+	conn.handler(nil, command, params)
 
 	return true
 }
