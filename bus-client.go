@@ -32,11 +32,12 @@ func BusConnect(path string, handler busHandler) (conn *BusConnection, err error
 
 	// create the connection.
 	conn = &BusConnection{
-		path:     path,
-		socket:   unixConn,
-		incoming: bufio.NewReader(unixConn),
-		outgoing: bufio.NewWriter(unixConn),
-		handler:  handler,
+		path:        path,
+		socket:      unixConn,
+		incoming:    bufio.NewReader(unixConn),
+		outgoing:    bufio.NewWriter(unixConn),
+		busHandler:  handler,
+		readHandler: jsonDataHandler,
 	}
 
 	return
@@ -71,13 +72,13 @@ func (conn *BusConnection) Run() {
 		}
 
 		// handle the event.
-		conn.handleEvent(line)
+		conn.readHandler(conn, line)
 
 	}
 }
 
 // handle a JSON event. returns true on success.
-func (conn *BusConnection) handleEvent(data []byte) bool {
+func jsonDataHandler(conn *BusConnection, data []byte) bool {
 
 	// parse the data into i.
 	var i interface{}
@@ -133,7 +134,7 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 	}
 
 	// if a handler for this command exists, run it.
-	conn.handler(source, command, params)
+	conn.busHandler(source, command, params)
 
 	return true
 }
