@@ -108,6 +108,7 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 		params  map[string]interface{}
 	)
 
+	// extract command.
 	switch c[0].(type) {
 	case string:
 		command = c[0].(string)
@@ -115,12 +116,19 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 		return false
 		// invalid.
 	}
+
+	// extract params.
 	switch c[1].(type) {
 	case map[string]interface{}:
 		params = c[1].(map[string]interface{})
 	default:
 		return false
 		// invalid.
+	}
+
+	// JSON data included incorrect types.
+	if command == nil || params == nil {
+		return false
 	}
 
 	// if a handler for this command exists, run it.
