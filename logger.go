@@ -7,17 +7,15 @@ package system
 */
 
 import (
-	"fmt"
 	"log"
 	"os"
 )
 
 // the logwriter type is used primarily as an io.Writer for the log class.
-type logwriter struct {
-}
+type logwriter bool
 
 // implements io.Writer
-func (l *logwriter) Write(p []byte) (n int, err error) {
+func (l logwriter) Write(p []byte) (n int, err error) {
 
 	// if the bus is connected, send a "log" message.
 	if LogBusConn.Connected {
@@ -40,8 +38,8 @@ var Logger *log.Logger
 
 // creates the initial logger.
 func createLogger(name string) (logger *log.Logger) {
-	writer := &logwriter{}
-	logger = log.New(writer, fmt.Sprintf("[%s] ", name), log.Ldate|log.Ltime|log.Lshortfile)
+	var writer logwriter = true
+	logger = log.New(writer, "["+name+"] ", log.Ldate|log.Ltime|log.Lshortfile)
 	return
 }
 

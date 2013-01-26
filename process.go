@@ -2,28 +2,9 @@ package system
 
 import "os"
 
-/*#########################
-### SystemProcess class ###
-#########################*/
-
-// Process objects typically inherit from the SystemProcess class, which itself inherits
-// from Go's os.Process.
-type SystemProcess struct {
-	*os.Process
-}
-
-// returns a new SystemPrcoess
-func newSystemProcess(pid int) *SystemProcess {
-	proc, _ := os.FindProcess(pid)
-	return &SystemProcess{proc}
-}
-
-// returns the numerical process ID
-func (p *SystemProcess) PID() int {
-	return p.Pid // provided by os.Process
-}
-
-/* [Process interface specification] */
+/*#######################
+### Process interface ###
+#######################*/
 
 // this defines the methods that must be available to system process objects.
 type Process interface {
@@ -48,13 +29,17 @@ type Process interface {
 
 type ClientProcess struct {
 	name string
-	*SystemProcess
+	*os.Process
 }
 
 // returns a new ClientProcess.
 // this is a low level interface. high-level interface will be provided by FindProcess().
 func newClientProcess(pid int) *ClientProcess {
-	return &ClientProcess{"", newSystemProcess(pid)}
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		return nil
+	}
+	return &ClientProcess{"", proc}
 }
 
 // sends a message directly to a process.
@@ -72,4 +57,9 @@ func (p *ClientProcess) Name() string {
 	// we must lookup the name manually.
 	// TODO.
 	return ""
+}
+
+// returns the numerical process ID.
+func (p *ClientProcess) PID() int {
+	return p.Pid
 }
