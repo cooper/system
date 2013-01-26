@@ -2,6 +2,10 @@ package system
 
 /* this file contains the programming interface used in client applications. */
 
+import "os"
+
+var Self Process
+
 // registers the process to the process manager and system bus.
 // Register("Some program", "1.0", "a sample program")
 func Register(name string, version string, description string) {
@@ -9,20 +13,31 @@ func Register(name string, version string, description string) {
 	// create the initial logger.
 	Logger = createLogger(name)
 
+	// create this process's Process.
+	Self = newClientProcess(os.Getpid())
+
 	// connect to the system bus.
-	conn, err := BusConnect("/System/Bus/processbus", clientHandler)
+	conn, err := BusConnect("/System/Bus/processbus", clientHandler, jsonDataHandler)
 	if err != nil {
 		// die...
 	}
 
-	// run the loop.
+	// connect to the logging bus.
+	logconn, err := BusConnect("/System/Bus/logbus", nil, nil)
+
+	// run the loops.
 	go conn.Run()
+	go logconn.Run()
 
 }
 
 /*##########################
 ### SYSTEM BUS INTERFACE ###
 ##########################*/
+
+func init() {
+	listeners = make(map[string]eventHandler)
+}
 
 var listeners map[string]eventHandler
 
@@ -33,11 +48,6 @@ type SystemBus struct {
 // registers an event listener.
 // Bus.RegisterListener(command, handler)
 func (bus *SystemBus) RegisterListener(command string, handler eventHandler) {
-
-	// initialize listeners.
-	if listeners == nil {
-		listeners = make(map[string]eventHandler)
-	}
 
 	// store the event handler.
 	listeners[command] = handler

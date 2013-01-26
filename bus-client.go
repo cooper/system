@@ -10,7 +10,7 @@ import (
 )
 
 // returns a new BusConnection.
-func BusConnect(path string, handler busHandler) (conn *BusConnection, err error) {
+func BusConnect(path string, bh busHandler, rh readHandler) (conn *BusConnection, err error) {
 
 	// check if file exists. if not, bail.
 	_, err = os.Lstat(path)
@@ -36,8 +36,8 @@ func BusConnect(path string, handler busHandler) (conn *BusConnection, err error
 		socket:      unixConn,
 		incoming:    bufio.NewReader(unixConn),
 		outgoing:    bufio.NewWriter(unixConn),
-		busHandler:  handler,
-		readHandler: jsonDataHandler,
+		busHandler:  bh,
+		readHandler: rh,
 	}
 
 	return
@@ -48,7 +48,7 @@ func (conn *BusConnection) Send(command string, params map[string]interface{}) b
 	if params == nil {
 		params = make(map[string]interface{})
 	}
-	b, err := json.Marshal([]interface{}{command, params})
+	b, err := json.Marshal([]interface{}{Self.PID(), command, params})
 	if err != nil {
 		return false
 	}
