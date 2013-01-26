@@ -30,8 +30,8 @@ func Register(name string, version string, description string) {
 	LogBusConn, err = BusConnect("/System/Bus/logbus", nil, nil)
 
 	// run the loops.
-	go conn.Run()
-	go logconn.Run()
+	go ProcessBusConn.Run()
+	go LogBusConn.Run()
 
 }
 
