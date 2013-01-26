@@ -38,6 +38,7 @@ func BusConnect(path string, bh busHandler, rh readHandler) (conn *BusConnection
 		outgoing:    bufio.NewWriter(unixConn),
 		busHandler:  bh,
 		readHandler: rh,
+		Connected:   true,
 	}
 
 	return

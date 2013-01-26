@@ -22,4 +22,5 @@ type BusConnection struct {
 	outgoing    *bufio.Writer // data writer - currently used for clients only
 	busHandler  busHandler    // the function called when an event is received
 	readHandler readHandler   // the function called when data is received
+	Connected   bool          // true if the bus is currently connected
 }

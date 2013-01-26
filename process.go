@@ -28,6 +28,9 @@ func (p *SystemProcess) PID() int {
 // this defines the methods that must be available to system process objects.
 type Process interface {
 
+	// returns the name of the process
+	Name() string
+
 	// sends a message via the system communication bus.
 	Send(message string, data map[string]interface{})
 
@@ -44,15 +47,29 @@ type Process interface {
 // intended for use in everyday programs.
 
 type ClientProcess struct {
+	name string
 	*SystemProcess
 }
 
 // returns a new ClientProcess.
 // this is a low level interface. high-level interface will be provided by FindProcess().
 func newClientProcess(pid int) *ClientProcess {
-	return &ClientProcess{newSystemProcess(pid)}
+	return &ClientProcess{"", newSystemProcess(pid)}
 }
 
 // sends a message directly to a process.
 func (p *ClientProcess) Send(message string, data map[string]interface{}) {
+}
+
+// returns the general non-unique name of the process, such as "DeviceManager"
+func (p *ClientProcess) Name() string {
+
+	// name is cached.
+	if len(p.name) != 0 {
+		return p.name
+	}
+
+	// we must lookup the name manually.
+	// TODO.
+	return ""
 }

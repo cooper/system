@@ -5,7 +5,7 @@ package system
 import "os"
 
 var (
-	Self           Process
+	Self           *ClientProcess
 	ProcessBusConn *BusConnection
 	LogBusConn     *BusConnection
 )
@@ -31,7 +31,7 @@ func Register(name string, version string, description string) {
 
 	// run the loops.
 	go ProcessBusConn.Run()
-	go LogBusConn.Run()
+	runLogger()
 
 }
 
