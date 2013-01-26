@@ -4,7 +4,11 @@ package system
 
 import "os"
 
-var Self Process
+var (
+	Self           Process
+	ProcessBusConn *BusConnection
+	LogBusConn     *BusConnection
+)
 
 // registers the process to the process manager and system bus.
 // Register("Some program", "1.0", "a sample program")
@@ -17,13 +21,13 @@ func Register(name string, version string, description string) {
 	Self = newClientProcess(os.Getpid())
 
 	// connect to the system bus.
-	conn, err := BusConnect("/System/Bus/processbus", clientHandler, jsonDataHandler)
+	ProcessBusConn, err := BusConnect("/System/Bus/processbus", clientHandler, jsonDataHandler)
 	if err != nil {
 		// die...
 	}
 
 	// connect to the logging bus.
-	logconn, err := BusConnect("/System/Bus/logbus", nil, nil)
+	LogBusConn, err = BusConnect("/System/Bus/logbus", nil, nil)
 
 	// run the loops.
 	go conn.Run()

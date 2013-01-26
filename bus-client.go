@@ -52,6 +52,12 @@ func (conn *BusConnection) Send(command string, params map[string]interface{}) b
 	if err != nil {
 		return false
 	}
+
+	return conn.SendData(b)
+}
+
+// send raw data in the form of a string. newline is appended.
+func (conn *BusConnection) SendData(data []byte) bool {
 	b = append(b, '\n')
 	if _, err = conn.socket.Write(b); err != nil {
 		return false
