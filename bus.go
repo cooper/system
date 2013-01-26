@@ -10,7 +10,7 @@ import (
 )
 
 // event handler function type.
-type busHandler func(command string, params map[string]interface{}))
+type busHandler func(command string, params map[string]interface{})
 
 // represents a connection to a bus.
 type BusConnection struct {
@@ -21,7 +21,7 @@ type BusConnection struct {
 }
 
 // returns a new BusConnection.
-func BusConnect(path string, handler busHandler (conn *BusConnection, err error) {
+func BusConnect(path string, handler busHandler) (conn *BusConnection, err error) {
 
 	// check if file exists. if not, bail.
 	_, err = os.Lstat(path)
@@ -41,7 +41,7 @@ func BusConnect(path string, handler busHandler (conn *BusConnection, err error)
 		return
 	}
 
-    // create the connection.
+	// create the connection.
 	conn = &BusConnection{
 		path:     path,
 		socket:   unixConn,
@@ -71,28 +71,28 @@ func (conn *BusConnection) Send(command string, params map[string]interface{}) b
 // read data from a connection continuously.
 func (conn *BusConnection) Run() {
 	for {
-	
-	    // get the next line
+
+		// get the next line
 		line, _, err := conn.incoming.ReadLine()
-		
+
 		// if there's an error, we will just continue and ignore it.
 		if err != nil {
 			return
 		}
-		
+
 		// handle the event.
 		conn.handleEvent(line)
-		
+
 	}
 }
 
 // handle a JSON event. returns true on success.
 func (conn *BusConnection) handleEvent(data []byte) bool {
-	
+
 	// parse the data into i.
 	var i interface{}
 	err := json.Unmarshal(data, &i)
-	
+
 	// parse error!
 	if err != nil {
 		return false
@@ -109,18 +109,18 @@ func (conn *BusConnection) handleEvent(data []byte) bool {
 	)
 
 	switch c[0].(type) {
-	    case string:
-		    command = c[0].(string)
-	    default:
-	        return false
-            // invalid.
+	case string:
+		command = c[0].(string)
+	default:
+		return false
+		// invalid.
 	}
 	switch c[1].(type) {
-	    case map[string]interface{}:
-		    params = c[1].(map[string]interface{})
-	    default:
-	        return false
-            // invalid.
+	case map[string]interface{}:
+		params = c[1].(map[string]interface{})
+	default:
+		return false
+		// invalid.
 	}
 
 	// if a handler for this command exists, run it
