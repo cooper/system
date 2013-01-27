@@ -46,6 +46,11 @@ func createLogger(name string) (logger *log.Logger) {
 // called after connecting to log bus.
 func runLogger() {
 
+	// we should already be connected by now.
+	if !LogBusConn.Connected {
+		return
+	}
+
 	// now that we have connected, send greeting.
 	LogBusConn.Send("register", map[string]interface{}{
 		"programName": Self.name,
@@ -55,4 +60,5 @@ func runLogger() {
 
 	// begin the loop.
 	go LogBusConn.Run()
+
 }
