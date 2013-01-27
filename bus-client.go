@@ -114,7 +114,7 @@ func jsonDataHandler(conn *BusConnection, data []byte) bool {
 		source = newClientProcess(c[0].(int))
 	default:
 		return false
-		// invalid
+		// invalid.
 	}
 
 	// extract command.

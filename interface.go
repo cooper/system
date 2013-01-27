@@ -11,7 +11,7 @@ var (
 )
 
 // registers the process to the process manager and system bus.
-// Register("Some program", "1.0", "a sample program")
+// system.Register("Some program", "1.0", "a sample program")
 func Register(name string, version string, description string) {
 
 	// create the initial logger.
@@ -46,11 +46,12 @@ func init() {
 var listeners map[string]eventHandler
 
 // the SystemBus type defines the object system.Bus.
+// system.Bus.RegisterListener() system.Bus.Broadcast()
 type SystemBus struct {
 }
 
 // registers an event listener.
-// Bus.RegisterListener(command, handler)
+// system.Bus.RegisterListener(command, handler)
 func (bus *SystemBus) RegisterListener(command string, handler eventHandler) {
 
 	// store the event handler.

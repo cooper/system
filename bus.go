@@ -14,7 +14,7 @@ type busHandler func(source Process, command string, params map[string]interface
 // single event hander function type.
 type eventHandler func(source Process, params map[string]interface{})
 
-// represents a connection to a bus.
+// represents a connection to a bus. this is used in clients.
 type BusConnection struct {
 	path        string        // connect address
 	socket      net.Conn      // there's no reason to restrict to Unix sockets
@@ -23,4 +23,11 @@ type BusConnection struct {
 	busHandler  busHandler    // the function called when an event is received
 	readHandler readHandler   // the function called when data is received
 	Connected   bool          // true if the bus is currently connected
+}
+
+// represents a bus server. this is used in servers.
+type BusServer struct {
+	path      string          // the listen address
+	listener  net.Listener    // typically a *UnixListener
+	processes map[int]Process // the currently connected processes
 }
