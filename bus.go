@@ -7,6 +7,7 @@ import (
 
 // data read handler.
 type readHandler func(conn *BusConnection, data []byte) bool
+type servReadHandler func(serv *BusServer, conn net.Conn, line string) bool
 
 // master event handler function type.
 type busHandler func(source Process, command string, params map[string]interface{})
@@ -27,7 +28,10 @@ type BusConnection struct {
 
 // represents a bus server. this is used in servers.
 type BusServer struct {
-	path      string          // the listen address
-	listener  net.Listener    // typically a *UnixListener
-	processes map[int]Process // the currently connected processes
+	path        string          // the listen address
+	listener    net.Listener    // typically a *UnixListener
+	processes   map[int]Process // the currently connected processes
+	busHandler  busHandler      // the function called when an event is received
+	readHandler servReadHandler // the function called when data is received
+	Listening   bool            // true if the bus is currently listening
 }
