@@ -4,11 +4,11 @@ package system
 
 const (
 	PATH_RAMDISK = ""
-	PATH_SYSDISK = "/drive" // main drive mountpoint (/Volumes/System)
+	PATH_SYSDISK = "/drive" //                        // main drive mountpoint (/Volumes/System)
 
-	PATH_USER        = "/Files"        // user files spun across all drives
-	PATH_VOLUME      = "/Volumes"      // mounted volumes
-	PATH_APPLICATION = "/Applications" // application bundles
+	PATH_USER        = "/Files"        //             // user files spun across all drives
+	PATH_VOLUME      = "/Volumes"      //             // mounted volumes
+	PATH_APPLICATION = "/Applications" //             // application bundles
 
 	PATH_SYSTEM     = "/System"                       // files belonging to the system itself
 	PATH_SYSLIBRARY = "/System/Library"               // modules, libraries, extensions, etc.
