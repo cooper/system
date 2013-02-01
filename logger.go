@@ -20,7 +20,7 @@ func (l logwriter) Write(p []byte) (n int, err error) {
 	// if the bus is connected, send a "log" message.
 	if LogBusConn.Connected {
 		LogBusConn.Send("log", map[string]interface{}{
-			"message": p,
+			"message": string(p),
 		})
 	}
 	n = len(p)

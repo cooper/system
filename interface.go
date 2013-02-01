@@ -19,6 +19,7 @@ func Register(name string, version string, description string) {
 
 	// create this process's Process.
 	Self = newClientProcess(os.Getpid())
+	Self.name = name
 
 	// connect to the system bus.
 	ProcessBusConn, err := BusConnect("/System/Bus/processbus", clientHandler, jsonDataHandler)
