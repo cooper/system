@@ -22,13 +22,13 @@ func Register(name string, version string, description string) {
 	Self.name = name
 
 	// connect to the system bus.
-	ProcessBusConn, err := BusConnect("/System/Bus/processbus", clientHandler, jsonDataHandler)
+	ProcessBusConn, err := BusConnect(PATH_SYSBUS+"/processbus", clientHandler, jsonDataHandler)
 	if err != nil {
 		// die...
 	}
 
 	// connect to the logging bus.
-	LogBusConn, err = BusConnect("/System/Bus/logbus", nil, nil)
+	LogBusConn, err = BusConnect(PATH_SYSBUS+"/logbus", nil, nil)
 
 	// run the loops.
 	go ProcessBusConn.Run()
